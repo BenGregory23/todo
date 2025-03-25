@@ -16,6 +16,7 @@ onMounted(async () =>{
 </script>
 
 <template>
-  <Button>Test</Button>
+
+
 </template>
 
