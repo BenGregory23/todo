@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import {Umbrella, Home, List, Film, Tv, Shrimp } from "lucide-vue-next";
+import {Home, List, Film, Tv, Shrimp, AlarmClock, Gamepad} from "lucide-vue-next";
+import PocketBase from "pocketbase";
 
-
+const {$pb} = useNuxtApp();
+const router = useRouter();
 const activeRoute = ref("Home");
 const routes = [
   {
@@ -15,6 +17,11 @@ const routes = [
     path: '/tasks',
   },
   {
+    name: 'Events',
+    icon: AlarmClock,
+    path: '/events',
+  },
+  {
     name: 'Movies',
     icon: Film,
     path: '/movies',
@@ -25,11 +32,26 @@ const routes = [
     path: '/shows',
   },
   {
+    name: 'Games',
+    icon: Gamepad,
+    path: '/games',
+  },
+  {
     name: 'Restaurants',
     icon: Shrimp,
     path: '/restaurants',
   },
 ]
+
+
+const logout =  () => {
+  try {
+     $pb.authStore.clear();
+     router.push('/auth/login');
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 </script>
 
@@ -38,8 +60,11 @@ const routes = [
 
   <div class="flex flex-col items-center space-y-5">
     <span class="py-4">
-      <NuxtImg src="https://cdn.discordapp.com/icons/696675534364606565/5fba0f63f22f6f1ade53ca32d934a06b.webp?size=240" alt="Logo" class="size-14 rounded-full" />
-  </span>
+      <h2 class="text-center text-2xl font-bold">
+        bin.
+      </h2>
+<!--      <NuxtImg src="https://cdn.discordapp.com/icons/696675534364606565/5fba0f63f22f6f1ade53ca32d934a06b.webp?size=240" alt="Logo" class="size-14 rounded-full" />-->
+    </span>
 
     <div class="flex flex-col items-center space-y-4">
 
@@ -48,7 +73,7 @@ const routes = [
         <TooltipTrigger  @click="()=>{
         console.log(route.name);
         activeRoute = route.name;
-      }"  class="" :class="`border   border-2 hover:bg-gray-100 flex justify-center items-center rounded-lg p-3 ${activeRoute === route.name ? 'border-black' : 'border-transparent'}`">
+      }"  class="" :class="`border-2 hover:bg-gray-100 flex justify-center items-center rounded-lg p-3 ${activeRoute === route.name ? 'border-black' : 'border-transparent'}`">
 
             <component :is="route.icon" class="size-6"/>
         </TooltipTrigger>
@@ -63,15 +88,28 @@ const routes = [
 
 
 
-  <div>
-    <Avatar>
-      <AvatarImage src="https://github.com/unovue.png" alt="@unovue" />
-      <AvatarFallback>CN</AvatarFallback>
-    </Avatar>
+  <div v-if="$pb.authStore.isValid" class="flex flex-col items-center space-y-4 p-2">
+
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+
+        <Avatar>
+          <AvatarImage :src="'https://wind.oxyjen.io/api/files/users/'+$pb.authStore.record?.id+'/'+$pb.authStore.record?.avatar" alt="@unovue" />
+          <AvatarFallback>{{
+              $pb.authStore.record?.name[0]
+            }}</AvatarFallback>
+        </Avatar>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem @click="logout">
+          Logout
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+
+
   </div>
 </div>
 </template>
-
-<style scoped>
-
-</style>
