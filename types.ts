@@ -24,7 +24,7 @@ export type Task = {
 export enum Urgency {
     CRITICAL = 'Critical',
     URGENT = 'Urgent',
-    HIGH = 'Hig',
+    HIGH = 'High',
     MEDIUM = 'Medium',
     LOW = 'Low'
 }
