@@ -1,10 +1,9 @@
 import PocketBase from "pocketbase";
 
 export default defineNuxtRouteMiddleware((to, from) => {
-   const { $pb } = useNuxtApp();
+    const authToken = useCookie("auth_token")
 
-   if(!$pb.authStore.token && to.path !== '/auth/login') {
-       console.log('User is not authenticated')
+   if(!authToken.value && to.path !== '/auth/login') {
        return navigateTo('/auth/login')
    }
 })

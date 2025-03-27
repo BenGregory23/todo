@@ -1,20 +1,22 @@
 <script setup lang="ts">
-import PocketBase from 'pocketbase';
-
-const pb = new PocketBase('https://wind.oxyjen.io');
-const records = ref(await pb.collection('tasks').getFullList());
-
+const {$pb}  = useNuxtApp()
+const records = ref(await $pb.collection('tasks').getFullList());
+const showTasksDone = ref(false)
 
 async function toggleTask(task:any){
   try{
     const updatedTask = {...task,isDone:!task.isDone};
-    const record = await pb.collection('tasks').update(updatedTask.id,updatedTask);
+    const record = await $pb.collection('tasks').update(updatedTask.id,updatedTask);
     if(record){
       task.isDone = updatedTask.isDone;
     }
   }catch (error) {
     console.error(error);
   }
+}
+
+function toggleTaskVisibility(){
+  showTasksDone.value = !showTasksDone.value
 }
 </script>
 
@@ -28,14 +30,15 @@ async function toggleTask(task:any){
             </Button>
           </NuxtLink>
           </span>
-      <span class="text-muted-foreground text-xs">
-          {{ records.filter((record)=>record.isDone == true)?.length }} tasks completed
-      </span>
+          <span class="text-muted-foreground text-xs hover:cursor-pointer hover:underline" @click="toggleTaskVisibility">
+            {{ records.filter((record)=>record.isDone == true)?.length }} tasks completed
+          </span>
+
 
 
     </div>
     <ul class=" space-y-4 w-1/2  ">
-      <li v-for="record in records" :key="record.id" class="flex items-start space-x-2 ">
+      <li v-for="record in records.filter((task:Task)=> showTasksDone ? task.isDone == true || task.isDone == false : task.isDone == false)" :key="record.id" class="flex items-start space-x-2 ">
         <Checkbox :id="record.id" class="size-6" @click="()=>toggleTask(record)" :checked="record.isDone" :value="record.isDone" :default-value="record.isDone" />
         <div class="flex flex-col">
           <div class="flex items-center space-x-2">

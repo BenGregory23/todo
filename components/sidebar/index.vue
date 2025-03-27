@@ -47,6 +47,8 @@ const routes = [
 const logout =  () => {
   try {
      $pb.authStore.clear();
+     const authToken = useCookie("auth_token")
+    authToken.value = null
      router.push('/auth/login');
   } catch (error) {
     console.error(error);
@@ -71,7 +73,6 @@ const logout =  () => {
       <Tooltip v-for="route in routes" :key="route.name">
         <NuxtLink  :to="route.path"  variant="ghost">
         <TooltipTrigger  @click="()=>{
-        console.log(route.name);
         activeRoute = route.name;
       }"  class="" :class="`border-2 hover:bg-gray-100 flex justify-center items-center rounded-lg p-3 ${activeRoute === route.name ? 'border-black' : 'border-transparent'}`">
 
