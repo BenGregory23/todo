@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import {type Task, Urgency} from "~/types";
+import {useTaskStore} from "~/store/tasks";
 
 
   const task = ref<Task>({});
+  const taskStore = useTaskStore();
   const {$pb} = useNuxtApp();
   const router = useRouter();
 
@@ -17,10 +19,10 @@ import {type Task, Urgency} from "~/types";
     task.value.createdBy = user.id;
     task.value.isDone = false;
 
-    console.log(task.value)
 
 
-    const result = await $pb.collection('tasks').create(task.value)
+    const result = taskStore.createTask(task.value);
+
     if(result){
       console.log(result)
       router.push("/tasks")
@@ -30,8 +32,8 @@ import {type Task, Urgency} from "~/types";
 </script>
 
 <template>
-  <main class="container mx-auto p-4 space-y-4" v-if="task">
-
+  <main class="container mx-auto p-4 space-y-4 w-full flex justify-center items-center" v-if="task">
+  <div class="flex flex-col space-y-4 w-1/2">
     <Input v-model="task.title" label="Title"  placeholder="Enter task title"/>
 
     <Textarea v-model="task.content" label="Content" placeholder="Enter task content" />
@@ -47,7 +49,7 @@ import {type Task, Urgency} from "~/types";
           <SelectLabel>Urgency</SelectLabel>
           <SelectItem v-for="urgency of Urgency" :value="urgency" :key="urgency">
             <Badge size="sm">
-            {{ urgency }}
+              {{ urgency }}
             </Badge>
           </SelectItem>
 
@@ -59,6 +61,10 @@ import {type Task, Urgency} from "~/types";
     <Button @click="addTask">
       Confirm
     </Button>
+
+  </div>
+
+
 
   </main>
 </template>
