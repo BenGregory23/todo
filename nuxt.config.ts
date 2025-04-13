@@ -19,5 +19,11 @@ export default defineNuxtConfig({
      * @default "./components/ui"
      */
     componentDir: './components/ui'
+  },
+  runtimeConfig: {
+    TMDB_API_KEY: process.env.TMDB_API_KEY,
+    public: {
+      TMDB_API_KEY: process.env.TMDB_API_KEY // Client-side access
+    }
   }
 })

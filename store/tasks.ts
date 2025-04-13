@@ -33,13 +33,12 @@ export const useTaskStore = defineStore('taskStore', {
             else return null;
         },
         async update(task:Task){
-            console.log(task)
             const result = await $pb.collection("tasks").update(task.id,task)
             if(result){
-                console.log("update result", result)
                 const localTask = this.tasks.find((t:Task)=>t.id == task.id)
                 if(localTask){
                     //localTask = result
+                    task.updatedAt = result.updatedAt
                 }
             }
         }

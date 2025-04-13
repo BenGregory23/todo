@@ -24,7 +24,6 @@ async function clicked() {
 
   if ($pb.authStore.isValid) {
     await $pb.collection('users').update(req.record.id, data);
-    console.log($pb.authStore)
     const authToken = useCookie("auth_token")
     authToken.value = $pb.authStore.token;
     await router.push('/');

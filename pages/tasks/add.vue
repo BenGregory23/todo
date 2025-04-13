@@ -21,10 +21,9 @@ import {useTaskStore} from "~/store/tasks";
 
 
 
-    const result = taskStore.createTask(task.value);
+    const result = await taskStore.createTask(task.value);
 
     if(result){
-      console.log(result)
       router.push("/tasks")
     }
   }
